@@ -7,7 +7,7 @@ const Followers = () => {
 
   return (
     <Wrapper>
-      <div class="followers">
+      <div className="followers">
       {githubFollowers.map((follower, index) => {
           const {avatar_url :img, html_url, login} = follower;
           return <article key={index}>
