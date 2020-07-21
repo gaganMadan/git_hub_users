@@ -6,15 +6,21 @@ const Repos = () => {
     const {githubRepos} = useContext(GithubContext);
     // console.log(githubRepos);
     let languages = githubRepos.reduce((total, item) => {
-        const {languages} = item;
-        if(!languages) return total;
-        (!total[languages]) ? total[languages] = 1 : total[languages] = total[languages] + 1;
-        console.log('hello'+languages);
-        total[languages] = 30;
+        const {language} = item;
+        if(!language) return total;
+        (!total[language]) ? total[language] = {label: language, value: 1} : total[language] = {...total[language], value : total[language].value + 1};
+        
+        //total[language] = 30;
         return total;
     }, {})
 
-  // STEP 2 - Chart Data
+    //console.log(languages);
+    languages = Object.values(languages)
+                .sort((b,a) => {
+                    return b.value - a.value;
+                })
+                .slice(0, 5);
+    // STEP 2 - Chart Data
     const chartData = [
       {
         label: "Javascript",
@@ -32,7 +38,7 @@ const Repos = () => {
   return (
     <section className="section">
         <Wrapper className="section-center">
-          <Pie3D data={chartData}/>;
+          <Pie3D data={languages}/>;
             {/* <ExampleChart data={chartData}/>; */}
         </Wrapper>
     </section>

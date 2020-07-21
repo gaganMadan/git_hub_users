@@ -38,7 +38,7 @@ const UserInfo = () => {
       color: 'yellow'
     }
   ]
-  console.log(githubUser);
+  //console.log(githubUser);
 
  
   
