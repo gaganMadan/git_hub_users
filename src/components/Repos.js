@@ -6,39 +6,72 @@ const Repos = () => {
     const {githubRepos} = useContext(GithubContext);
     // console.log(githubRepos);
     let languages = githubRepos.reduce((total, item) => {
-        const {language} = item;
+        const {language, stargazers_count} = item;
         if(!language) return total;
-        (!total[language]) ? total[language] = {label: language, value: 1} : total[language] = {...total[language], value : total[language].value + 1};
+        (!total[language]) ? total[language] = {label: language, value: 1, stars: stargazers_count} : total[language] = {...total[language], value : total[language].value + 1, stars: total[language].stars + stargazers_count};
         
         //total[language] = 30;
         return total;
     }, {})
 
     //console.log(languages);
-    languages = Object.values(languages)
-                .sort((b,a) => {
-                    return b.value - a.value;
-                })
-                .slice(0, 5);
-    // STEP 2 - Chart Data
-    const chartData = [
-      {
-        label: "Javascript",
-        value: "20"
-      },
-      {
-        label: "CSS",
-        value: "13"
-      },
-      {
-        label: "HTML",
-        value: "180"
-      }
-    ];
+    var mostUsed = Object.values(languages)
+                    .sort((b,a) => {
+                        return b.value - a.value;
+                    })
+                    .slice(0, 5);
+
+    // most stars per language
+    var mostPopular = Object.values(languages)
+                        .sort((b,a) => {
+                            return b.stars - a.stars
+                        })
+                        .map((item) => {
+                            return {...item, value: item.stars}
+                        }).slice(0, 5)
+      
+                        //console.log(mostPopular)
+    
+    // stars, forks
+    let { stars, forks } = githubRepos.reduce((total, item) => {
+        const { stargazers_count, name, forks } = item;
+        total.stars[stargazers_count] = { label: name, value: stargazers_count}
+        total.forks[forks] = { label: name, value: forks}
+        return total
+    }, 
+    {
+      stars :{},
+      forks:{}
+    }
+    );
+
+    stars = Object.values(stars).slice(-5).reverse();
+    forks = Object.values(forks).slice(-5).reverse();
+
+
+
+    // STEP 2 - Chart Data -- Dummy Data
+    // const chartData = [
+    //   {
+    //     label: "Javascript",
+    //     value: "20"
+    //   },
+    //   {
+    //     label: "CSS",
+    //     value: "13"
+    //   },
+    //   {
+    //     label: "HTML",
+    //     value: "180"
+    //   }
+    // ];
   return (
     <section className="section">
         <Wrapper className="section-center">
-          <Pie3D data={languages}/>;
+          <Pie3D data={mostUsed}/>
+          <Column3D data={stars}/>
+          <Doughnut2D data={mostPopular}/>
+          <Bar3D data={forks}/>
             {/* <ExampleChart data={chartData}/>; */}
         </Wrapper>
     </section>
